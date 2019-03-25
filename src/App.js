@@ -1,28 +1,16 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import Client from './Client';
+import { Router } from '@reach/router';
+import ListEvents from './components/ListEvents';
+import ViewEvent from './components/ViewEvent';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+export default function App() {
+  return (
+    <Client>
+      <Router>
+        <ListEvents path="/" />
+        <ViewEvent path=":eventId" />
+      </Router>
+    </Client>
+  );
 }
-
-export default App;
