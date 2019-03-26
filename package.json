@@ -1,5 +1,5 @@
 {
-  "name": "graphql",
+  "name": "react-apollo-aws-appsync",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
