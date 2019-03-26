@@ -1,68 +1,96 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Demo React GraphQL app using the Apollo client and AWS AppSync
 
-## Available Scripts
+This App demonstrates how to use the React Apollo Client with AWS AppSync, and
+two of many strategies to updating your UI and Apollo cache using the
+<Mutation /> components update and optimistic response functions.
 
-In the project directory, you can run:
+## Get started
 
-### `npm start`
+Start by cloning or downloading the repository.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The App uses AWS AppSync so to check it out you should head over to
+[Amazon AWS](http://aws.amazon.com) and create an account. AWS AppSync is free
+as long as you do not use above the
+[free tier](https://aws.amazon.com/appsync/pricing/), which is more than enough
+to play around with GraphQL.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+In the AWS Management Console find and go to the AWS AppSync service. You can do
+this quite easily by searching for `app` in the AWS service panel.
 
-### `npm test`
+### Create a sample API
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Click on `Create API` and select the `Event App` from the
+`Start from a sample project` panel, and click `Start`. Name your API or go with
+the default name, and click `Create`. When DynamoDB has finished the setup you
+are ready to execute some queries and use your new API.
 
-### `npm run build`
+Before getting up and running, we have to add a new update field to the Mutation
+type and add a resolver to the update field.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Go to Schema and add the following `updateEvent` field to the `Mutation type` (l
+40), and save the Schema.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+```graphql
+# Update a single event.
+updateEvent(
+    id: ID!,
+    name: String!,
+    when: String!,
+    where: String!,
+    description: String!
+): Event
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Afterward, find the newly create mutation field in the `Resolvers panel` and
+click on `Attach`. Select `AppSyncEventTable` as the data source to resolve, and
+replace the request mapping template with the following resolver:
 
-### `npm run eject`
+```
+{
+    "version" : "2017-02-28",
+    "operation" : "UpdateItem",
+    "key" : {
+        "id" : { "S" : "${context.arguments.id}" }
+    },
+    "update" : {
+        "expression" : "SET #when = :when, #where = :where, description = :description, #name = :name",
+        ## We need to map name, when and where, as they are reserved by DynamoDB
+        "expressionNames": {
+            "#name" : "name",
+            "#when" : "when",
+            "#where" : "where"
+        },
+        "expressionValues": {
+            ":when" : { "S": "${context.arguments.when}" },
+            ":where" : { "S": "${context.arguments.where}" },
+            ":description" : { "S": "${context.arguments.description}" },
+            ":name" : { "S": "${context.arguments.name}" }
+        }
+    }
+}
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Finally, you need to replace the response mapping template with the following:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+$util.toJson($context.result)
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+and click `Save Resolver`.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+As the last step you should download the `aws-exports.js` configuration file and
+copy it to the project. You can get the configuration file by clicking on the
+name of your API and click on `JavaScript` in the `Integrate with your App`
+panel and then click on the `Download Config` button.
 
-## Learn More
+## Get up and running
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+So now you've got your GraphQL API up and running you are ready to run the APP
+and explore the code. Use it as you please.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+yarn install
+yarn start
+```
 
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Enjoy
