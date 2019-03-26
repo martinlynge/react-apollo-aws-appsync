@@ -2,7 +2,7 @@
 
 This App demonstrates how to use the React Apollo Client with AWS AppSync, and
 two of many strategies to updating your UI and Apollo cache using the
-<Mutation /> components update and optimistic response functions.
+`<Mutation />` components update and optimistic response functions.
 
 ## Get started
 
