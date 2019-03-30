@@ -1,23 +1,23 @@
 # Demo React GraphQL app using the Apollo client and AWS AppSync
 
-This App demonstrates how to use the React Apollo Client with AWS AppSync, and
-two of many strategies to updating your UI and Apollo cache using the
-`<Mutation />` components update and optimistic response functions.
+A simple event app that demonstrates how to use the React Apollo Client with AWS
+AppSync, and how to effectively update the UI, when dealing with data that is
+already in the Apollo cache, using the `<Mutation />` components update and
+optimistic response functions.
 
 ## Get started
 
 Start by cloning or downloading the repository.
 
-The App uses AWS AppSync so to check it out you should head over to
-[Amazon AWS](http://aws.amazon.com) and create an account. AWS AppSync is free
-as long as you do not use above the
+Go to [Amazon AWS](http://aws.amazon.com) and create an account. AWS AppSync is
+free as long as you do not use above the
 [free tier](https://aws.amazon.com/appsync/pricing/), which is more than enough
 to play around with GraphQL.
 
-In the AWS Management Console find and go to the AWS AppSync service. You can do
-this quite easily by searching for `app` in the AWS service panel.
+In the AWS Management Console find and go to the AWS AppSync service. You can
+find AWS AppSync quite easily by searching for `app` in the AWS service panel.
 
-### Create a sample API
+### Create an AWS AppSync sample API
 
 Click on `Create API` and select the `Event App` from the
 `Start from a sample project` panel, and click `Start`. Name your API or go with
@@ -41,9 +41,10 @@ updateEvent(
 ): Event
 ```
 
-Afterward, find the newly create mutation field in the `Resolvers panel` and
-click on `Attach`. Select `AppSyncEventTable` as the data source to resolve, and
-replace the request mapping template with the following resolver:
+Afterward, we have to attatch a resolver to the newly create mutation field. TO
+do this find you mutation field in the `Resolvers panel` and click on `Attach`.
+Select `AppSyncEventTable` as the data source to resolve, and replace the
+request mapping template with the following resolver:
 
 ```
 {
