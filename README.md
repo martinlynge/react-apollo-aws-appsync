@@ -1,9 +1,10 @@
 # Demo React GraphQL app using the Apollo client and AWS AppSync
 
-A simple event app that demonstrates how to use the React Apollo Client with AWS
+A simple event app that demonstrates how to use the
+[React Apollo Client](https://www.apollographql.com/docs/react/) with AWS
 AppSync, and how to effectively update the UI, when dealing with data that is
-already in the Apollo cache, using the `<Mutation />` components update and
-optimistic response functions.
+already in the Apollo cache, using the `<Mutation />` components `update` and
+`optimisticResponse` functions.
 
 ## Get started
 
