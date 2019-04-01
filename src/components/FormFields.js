@@ -59,7 +59,6 @@ export default function FormFields({
         fullWidth
       />
       <Grid container justify="space-between" style={{ marginTop: 16 }}>
-        <Button>Cancel</Button>
         <Button type="submit" variant="contained" color="primary">
           {submitLabel}
         </Button>
