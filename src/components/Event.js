@@ -31,7 +31,7 @@ function Event({ data, classes }) {
   const { id, name, when, where, description } = data;
 
   return (
-    <Grid item xs={12} lg={6}>
+    <Grid item xs={12} md={4} lg={3}>
       <Card className={classes.card}>
         <CardHeader
           action={<CardMenu id={id} />}
