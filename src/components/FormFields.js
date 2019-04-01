@@ -58,11 +58,13 @@ export default function FormFields({
         required
         fullWidth
       />
-      <Grid container justify="space-between" style={{ marginTop: 16 }}>
-        <Button type="submit" variant="contained" color="primary">
-          {submitLabel}
-        </Button>
-      </Grid>
+      {submitLabel && (
+        <Grid container justify="space-between" style={{ marginTop: 16 }}>
+          <Button type="submit" variant="contained" color="primary">
+            {submitLabel}
+          </Button>
+        </Grid>
+      )}
     </>
   );
 }
