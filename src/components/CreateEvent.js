@@ -65,6 +65,12 @@ export default class CreateEvent extends Component {
     this.handleClear();
   }
 
+  isDisabled() {
+    const { name, when, where, description } = this.state;
+
+    return !(!!name && !!when && !!where && !!description);
+  }
+
   render() {
     const { name, when, where, description } = this.state;
 
@@ -139,7 +145,12 @@ export default class CreateEvent extends Component {
                 <Button onClick={this.handleClose} color="primary">
                   Cancel
                 </Button>
-                <Button type="submit" variant="contained" color="primary">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disabled={this.isDisabled()}
+                >
                   Add event
                 </Button>
               </DialogActions>
