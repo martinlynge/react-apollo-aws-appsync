@@ -50,6 +50,7 @@ export default class CardMenu extends Component {
           <Mutation mutation={DELETE_EVENT}>
             {deleteEvent => (
               <MenuItem
+                disabled={id < 0}
                 onClick={event => {
                   event.preventDefault();
                   deleteEvent({
