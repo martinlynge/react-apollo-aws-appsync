@@ -12,6 +12,7 @@ import {
   CardMedia,
   withStyles,
   Grid,
+  Container,
 } from '@material-ui/core';
 import PlaceIcon from '@material-ui/icons/Place';
 import dayjs from 'dayjs';
@@ -50,31 +51,33 @@ function ViewEvent({ eventId, classes }) {
         const { name, when, where, description } = data.getEvent;
         return (
           <div className={classes.wrapper}>
-            <Card elevation={0}>
-              <CardHeader
-                title={name}
-                subheader={dayjs(when).format('ddd, MMM D, YYYY HH:mm')}
-              />
-              <CardMedia className={classes.media} image={cover(name)} />
-              <CardContent>
-                <Grid
-                  container
-                  alignItems="center"
-                  style={{ marginBottom: 16 }}
-                >
-                  <PlaceIcon
-                    color="action"
-                    fontSize="small"
-                    style={{ marginLeft: -4, marginRight: 4 }}
-                  />
-                  <Typography variant="body2">{where}</Typography>
-                </Grid>
-                <Typography variant="body1">{description}</Typography>
-              </CardContent>
-            </Card>
-            <div className={classes.form}>
-              <UpdateEvent data={data.getEvent} />
-            </div>
+            <Container maxWidth="md">
+              <Card elevation={0}>
+                <CardHeader
+                  title={name}
+                  subheader={dayjs(when).format('ddd, MMM D, YYYY HH:mm')}
+                />
+                <CardMedia className={classes.media} image={cover(name)} />
+                <CardContent>
+                  <Grid
+                    container
+                    alignItems="center"
+                    style={{ marginBottom: 16 }}
+                  >
+                    <PlaceIcon
+                      color="action"
+                      fontSize="small"
+                      style={{ marginLeft: -4, marginRight: 4 }}
+                    />
+                    <Typography variant="body2">{where}</Typography>
+                  </Grid>
+                  <Typography variant="body1">{description}</Typography>
+                </CardContent>
+              </Card>
+              <div className={classes.form}>
+                <UpdateEvent data={data.getEvent} />
+              </div>
+            </Container>
           </div>
         );
       }}

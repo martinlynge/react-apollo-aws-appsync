@@ -30,8 +30,8 @@ const styles = theme => ({
   },
   fab: {
     position: 'fixed',
-    bottom: theme.spacing.unit * 2,
-    right: theme.spacing.unit * 2,
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
   },
 });
 
@@ -58,9 +58,9 @@ const ListEvents = ({ classes }) => {
         return (
           <>
             {data.listEvents.items.length ? (
-              <Grid container spacing={24} className={classes.wrapper}>
+              <Grid container spacing={2} className={classes.wrapper}>
                 <Grid item xs={12}>
-                  <Grid container spacing={24}>
+                  <Grid container spacing={2}>
                     {data.listEvents.items.map(data => (
                       <Event key={data.id} data={data} />
                     ))}
@@ -78,7 +78,7 @@ const ListEvents = ({ classes }) => {
             ) : (
               <Grid
                 container
-                spacing={24}
+                spacing={1}
                 className={classes.wrapper}
                 justify="center"
                 alignItems="center"
