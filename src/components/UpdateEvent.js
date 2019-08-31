@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Mutation } from 'react-apollo';
+import React, { useState } from 'react';
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import FormFields from './FormFields';
 
@@ -27,52 +27,46 @@ const UPDATE_EVENT = gql`
   }
 `;
 
-export default class UpdateEvent extends Component {
-  state = {
-    name: this.props.data.name,
-    when: this.props.data.when,
-    where: this.props.data.where,
-    description: this.props.data.description,
-  };
+function UpdateEvent(props) {
+  const [state, setState] = useState({
+    name: props.data.name,
+    when: props.data.when,
+    where: props.data.where,
+    description: props.data.description,
+  });
 
-  handleChange = this.handleChange.bind(this);
+  const [updateEvent] = useMutation(UPDATE_EVENT);
 
-  handleChange(event) {
-    const { name, value } = event.target;
+  const { name, when, where, description } = state;
 
-    this.setState({
-      [name]: value,
-    });
-  }
-
-  render() {
-    const { name, when, where, description } = this.state;
-
-    return (
-      <Mutation mutation={UPDATE_EVENT}>
-        {updateEvent => (
-          <form
-            onSubmit={event => {
-              event.preventDefault();
-              const { id } = this.props.data;
-              // If the id from the query and mutation results match up
-              // the cache and UI is updated automatically
-              updateEvent({
-                variables: { id, name, when, where, description },
-              });
-            }}
-          >
-            <FormFields
-              submitLabel="Update event"
-              name={name}
-              when={when}
-              where={where}
-              description={description}
-              handleChange={this.handleChange}
-            />
-          </form>
-        )}
-      </Mutation>
-    );
-  }
+  return (
+    <form
+      onSubmit={event => {
+        event.preventDefault();
+        const { id } = props.data;
+        // If the id from the query and mutation results match up
+        // the cache and UI is updated automatically
+        updateEvent({
+          variables: { id, name, when, where, description },
+        });
+      }}
+    >
+      <FormFields
+        submitLabel="Update event"
+        name={name}
+        when={when}
+        where={where}
+        description={description}
+        handleChange={event => {
+          const { name, value } = event.target;
+          setState({
+            ...state,
+            [name]: value,
+          });
+        }}
+      />
+    </form>
+  );
 }
+
+export default UpdateEvent;

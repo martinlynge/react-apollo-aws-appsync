@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Query } from 'react-apollo';
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import Event from './Event';
 import CreateEvent from './CreateEvent';
@@ -37,82 +37,77 @@ const styles = theme => ({
 
 const ListEvents = ({ classes }) => {
   const [isOpen, setToggle] = useState(false);
+  const { loading, error, data } = useQuery(LIST_EVENTS);
+
+  if (loading) return <Loading />;
+  if (error)
+    return (
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={true}
+        autoHideDuration={6000}
+        message={<span id={error.name}>{error.message}</span>}
+      />
+    );
 
   return (
-    <Query query={LIST_EVENTS}>
-      {({ loading, error, data }) => {
-        if (loading) return <Loading />;
-        if (error)
-          return (
-            <Snackbar
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              open={true}
-              autoHideDuration={6000}
-              message={<span id={error.name}>{error.message}</span>}
-            />
-          );
-
-        return (
-          <>
-            {data.listEvents.items.length ? (
-              <Grid container spacing={2} className={classes.wrapper}>
-                <Grid item xs={12}>
-                  <Grid container spacing={2}>
-                    {data.listEvents.items.map(data => (
-                      <Event key={data.id} data={data} />
-                    ))}
-                  </Grid>
-                </Grid>
-                <Fab
-                  onClick={() => setToggle(true)}
-                  color="primary"
-                  aria-label="Add"
-                  className={classes.fab}
-                >
-                  <AddIcon />
-                </Fab>
-              </Grid>
-            ) : (
-              <Grid
-                container
-                spacing={1}
-                className={classes.wrapper}
-                justify="center"
-                alignItems="center"
-                style={{ height: '100vh' }}
+    <>
+      {data.listEvents.items.length ? (
+        <Grid container spacing={2} className={classes.wrapper}>
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              {data.listEvents.items.map(data => (
+                <Event key={data.id} data={data} />
+              ))}
+            </Grid>
+          </Grid>
+          <Fab
+            onClick={() => setToggle(true)}
+            color="primary"
+            aria-label="Add"
+            className={classes.fab}
+          >
+            <AddIcon />
+          </Fab>
+        </Grid>
+      ) : (
+        <Grid
+          container
+          spacing={1}
+          className={classes.wrapper}
+          justify="center"
+          alignItems="center"
+          style={{ height: '100vh' }}
+        >
+          <Grid item xs={10} md={8}>
+            <Grid
+              container
+              justify="center"
+              alignItems="center"
+              direction="column"
+            >
+              <Typography variant="title" align="center">
+                There's no events yet
+              </Typography>
+              <Fab
+                onClick={() => setToggle(true)}
+                variant="extended"
+                color="primary"
+                aria-label="Add"
+                style={{ marginTop: 32 }}
               >
-                <Grid item xs={10} md={8}>
-                  <Grid
-                    container
-                    justify="center"
-                    alignItems="center"
-                    direction="column"
-                  >
-                    <Typography variant="title" align="center">
-                      There's no events yet
-                    </Typography>
-                    <Fab
-                      onClick={() => setToggle(true)}
-                      variant="extended"
-                      color="primary"
-                      aria-label="Add"
-                      style={{ marginTop: 32 }}
-                    >
-                      <AddIcon style={{ marginRight: 8 }} />
-                      Add a new event
-                    </Fab>
-                  </Grid>
-                </Grid>
-              </Grid>
-            )}
-            <CreateEvent isOpen={isOpen} setToggle={setToggle} />
-          </>
-        );
-      }}
-    </Query>
+                <AddIcon style={{ marginRight: 8 }} />
+                Add a new event
+              </Fab>
+            </Grid>
+          </Grid>
+        </Grid>
+      )}
+      <CreateEvent isOpen={isOpen} setToggle={setToggle} />
+    </>
   );
 };
 

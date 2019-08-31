@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { IconButton } from '@material-ui/core';
 import { Link } from '@reach/router';
-import { Mutation } from 'react-apollo';
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { LIST_EVENTS } from './ListEvents';
 
@@ -16,76 +16,62 @@ const DELETE_EVENT = gql`
   }
 `;
 
-export default class CardMenu extends Component {
-  state = {
-    anchorEl: null,
-  };
+function CardMenu({ id }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [deleteEvent] = useMutation(DELETE_EVENT);
 
-  handleClick = event => {
-    this.setState({ anchorEl: event.currentTarget });
-  };
+  const handleClose = () => setAnchorEl(null);
 
-  handleClose = () => {
-    this.setState({ anchorEl: null });
-  };
+  return (
+    <>
+      <IconButton onClick={event => setAnchorEl(event.currentTarget)}>
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose} component={Link} to={id}>
+          Update
+        </MenuItem>
+        <MenuItem
+          disabled={id < 0}
+          onClick={event => {
+            event.preventDefault();
+            deleteEvent({
+              variables: { id },
+              // We only have to account for the id in the response as
+              // that is all that is required to remove the event
+              // from the list
+              optimisticResponse: {
+                __typename: 'Mutation',
+                deleteEvent: {
+                  __typename: 'Event',
+                  id,
+                },
+              },
+              update: cache => {
+                const data = cache.readQuery({ query: LIST_EVENTS });
 
-  render() {
-    const { anchorEl } = this.state;
-    const { id } = this.props;
+                // Filter events and return new array
+                // without the event that we want to remove
+                data.listEvents.items = data.listEvents.items.filter(
+                  item => item.id !== id
+                );
 
-    return (
-      <>
-        <IconButton onClick={this.handleClick}>
-          <MoreVertIcon />
-        </IconButton>
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={this.handleClose}
+                cache.writeQuery({ query: LIST_EVENTS, data });
+              },
+            });
+            handleClose();
+          }}
         >
-          <MenuItem onClick={this.handleClose} component={Link} to={id}>
-            Update
-          </MenuItem>
-          <Mutation mutation={DELETE_EVENT}>
-            {deleteEvent => (
-              <MenuItem
-                disabled={id < 0}
-                onClick={event => {
-                  event.preventDefault();
-                  deleteEvent({
-                    variables: { id },
-                    // We only have to account for the id in the response as
-                    // that is all that is required to remove the event
-                    // from the list
-                    optimisticResponse: {
-                      __typename: 'Mutation',
-                      deleteEvent: {
-                        __typename: 'Event',
-                        id,
-                      },
-                    },
-                    update: cache => {
-                      const data = cache.readQuery({ query: LIST_EVENTS });
-
-                      // Filter events and return new array
-                      // without the event that we want to remove
-                      data.listEvents.items = data.listEvents.items.filter(
-                        item => item.id !== id
-                      );
-
-                      cache.writeQuery({ query: LIST_EVENTS, data });
-                    },
-                  });
-                  this.handleClose();
-                }}
-              >
-                Delete
-              </MenuItem>
-            )}
-          </Mutation>
-        </Menu>
-      </>
-    );
-  }
+          Delete
+        </MenuItem>
+      </Menu>
+    </>
+  );
 }
+
+export default CardMenu;

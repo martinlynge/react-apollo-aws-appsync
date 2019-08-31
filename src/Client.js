@@ -1,6 +1,6 @@
 import React from 'react';
 import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from '@apollo/react-hooks';
 import config from './aws-exports';
 
 const client = new ApolloClient({
