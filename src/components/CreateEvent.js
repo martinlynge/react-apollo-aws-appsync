@@ -3,11 +3,13 @@ import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { LIST_EVENTS } from './ListEvents';
 import FormFields from './FormFields';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from '@material-ui/core';
 
 const CREATE_EVENT = gql`
   mutation createEvent(
@@ -33,7 +35,7 @@ const CREATE_EVENT = gql`
 
 const now = () => new Date().toISOString().substring(0, 19);
 
-function CreateEvent(props) {
+function CreateEvent({ setToggle, isOpen }) {
   const [state, setState] = useState({
     name: '',
     when: now(),
@@ -62,7 +64,7 @@ function CreateEvent(props) {
   }
 
   function handleClose() {
-    props.setToggle(false);
+    setToggle(false);
     handleClear();
   }
 
@@ -76,7 +78,7 @@ function CreateEvent(props) {
 
   return (
     <Dialog
-      open={props.isOpen}
+      open={isOpen}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
     >
@@ -116,7 +118,7 @@ function CreateEvent(props) {
             // have to wait for the mutation response
             // before we can update the cache.
             update: (cache, { data: { createEvent } }) => {
-              // We read thee query LIST_EVENTS from the cache
+              // We read the query LIST_EVENTS from the cache
               const data = cache.readQuery({ query: LIST_EVENTS });
 
               // We add the result of the newly created event
@@ -149,7 +151,7 @@ function CreateEvent(props) {
             color="primary"
             disabled={isDisabled()}
           >
-            Add event
+            Add
           </Button>
         </DialogActions>
       </form>

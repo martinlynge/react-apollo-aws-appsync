@@ -19,6 +19,13 @@ export const LIST_EVENTS = gql`
         when
         where
         description
+        comments {
+          items {
+            commentId
+            content
+            createdAt
+          }
+        }
       }
     }
   }
@@ -37,7 +44,7 @@ const styles = theme => ({
 
 const ListEvents = ({ classes }) => {
   const [isOpen, setToggle] = useState(false);
-  const { loading, error, data } = useQuery(LIST_EVENTS);
+  const { loading, error, data } = useQuery(LIST_EVENTS, { pollInterval: 500 });
 
   if (loading) return <Loading />;
   if (error)

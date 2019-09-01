@@ -24,11 +24,12 @@ const styles = () => ({
   },
   actions: {
     display: 'flex',
+    justifyContent: 'space-between',
   },
 });
 
 function Event({ data, classes }) {
-  const { id, name, when, where, description } = data;
+  const { id, name, when, where, description, comments } = data;
 
   return (
     <Grid item xs={12} md={4} lg={3}>
@@ -46,14 +47,21 @@ function Event({ data, classes }) {
               fontSize="small"
               style={{ marginLeft: -4, marginRight: 4 }}
             />
-            <Typography variant="body2">{where}</Typography>
+            <Typography variant="subtitle2">{where}</Typography>
           </Grid>
-          <Typography variant="body1">{truncate(description, 40)}</Typography>
+          <Typography variant="body2">{truncate(description, 40)}</Typography>
         </CardContent>
-        <CardActions>
+        <CardActions className={classes.actions}>
           <Button size="small" component={Link} to={id}>
-            Learn More
+            Read more
           </Button>
+          {!!comments.items.length && (
+            <Typography variant="subtitle2">
+              {`${comments.items.length} comment${
+                comments.items.length > 1 ? 's' : ''
+              }`}
+            </Typography>
+          )}
         </CardActions>
       </Card>
     </Grid>
